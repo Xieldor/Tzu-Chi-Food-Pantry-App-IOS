@@ -1,0 +1,19 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'tzuchi' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for tzuchi
+  pod 'OHMySQL', '~> 3.0.0'
+  target 'tzuchiTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'tzuchiUITests' do
+    # Pods for testing
+  end
+
+end

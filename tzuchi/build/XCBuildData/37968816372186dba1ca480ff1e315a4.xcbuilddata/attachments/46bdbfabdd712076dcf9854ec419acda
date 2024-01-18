@@ -1,0 +1,6 @@
+framework module Pods_tzuchi {
+  umbrella header "Pods-tzuchi-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,5 @@
+ extern const unsigned char Pods_tzuchi_tzuchiUITestsVersionString[];
+ extern const double Pods_tzuchi_tzuchiUITestsVersionNumber;
+
+ const unsigned char Pods_tzuchi_tzuchiUITestsVersionString[] __attribute__ ((used)) = "@(#)PROGRAM:Pods_tzuchi_tzuchiUITests  PROJECT:Pods-1" "\n";
+ const double Pods_tzuchi_tzuchiUITestsVersionNumber __attribute__ ((used)) = (double)1.;

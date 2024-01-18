@@ -1,0 +1,8 @@
+Target dependency graph (4 targets)
+Target 'Pods-tzuchiTests' in project 'Pods'
+➜ Explicit dependency on target 'Pods-tzuchi' in project 'Pods'
+Target 'Pods-tzuchi-tzuchiUITests' in project 'Pods'
+➜ Explicit dependency on target 'OHMySQL' in project 'Pods'
+Target 'Pods-tzuchi' in project 'Pods'
+➜ Explicit dependency on target 'OHMySQL' in project 'Pods'
+Target 'OHMySQL' in project 'Pods' (no dependencies)
