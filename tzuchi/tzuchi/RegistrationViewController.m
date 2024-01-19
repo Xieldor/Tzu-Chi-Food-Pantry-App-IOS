@@ -147,7 +147,7 @@ id valueOrNSNull(id value) {
         // 查询是否存在与当前地址相同但驾照号不同的记录
         NSString *queryStr = [NSString stringWithFormat:@"CONCAT(address_street, ' ', apt_number, ' ', address_city) = '%@' AND license_number != '%@'", fullAddress, self.licenseNumber];
         NSLog(@"Query: %@", queryStr);
-        OHMySQLQueryRequest *queryRequest = [OHMySQLQueryRequestFactory SELECT:@"tzuchi" condition:queryStr];
+        OHMySQLQueryRequest *queryRequest = [OHMySQLQueryRequestFactory SELECT:dbName condition:queryStr];
         NSArray *response = [queryContext executeQueryRequestAndFetchResult:queryRequest error:&error];
 
         // 如果查询到重复地址
@@ -219,6 +219,15 @@ id valueOrNSNull(id value) {
             @"last_time": @"00000000" // 默认值，假设总是有一个值
         };
         
+        NSDictionary *dataToUpdate = @{
+            @"apt_number": valueOrNSNull(aptNumber),
+            @"population_over_65": valueOrNSNull(elderlyCount),
+            @"population_17_to_64": valueOrNSNull(adultCount),
+            @"population_under_17": valueOrNSNull(childrenCount),
+            @"veteran": isVeteran ? @"1" : @"0",
+            @"phone_number": valueOrNSNull(phoneNumber),
+        };
+        
         // 这里插入使用OHMySQL写入数据到数据库的代码
         NSString *password = self.databasePassword;
         NSString *ip = self.databaseip;
@@ -241,12 +250,12 @@ id valueOrNSNull(id value) {
         
         if (self.isUpdateOperation) {
             NSString *licenseNumber = self.licenseNumber;
-            OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory UPDATE:@"tzuchi" set:dataToInsert condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
+            OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory UPDATE:dbName set:dataToUpdate condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
             
             // 执行查询
             [queryContext executeQueryRequest:query error:&error];
         } else {
-            OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory INSERT:@"tzuchi" set:dataToInsert];
+            OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory INSERT:dbName set:dataToInsert];
             
             // 执行查询
             [queryContext executeQueryRequest:query error:&error];
@@ -321,7 +330,7 @@ id valueOrNSNull(id value) {
         for (NSDictionary *duplicate in duplicates) {
             NSString *licenseNumberToDelete = duplicate[@"license_number"];
             NSString *deleteQueryStr = [NSString stringWithFormat:@"license_number = '%@'", licenseNumberToDelete];
-            OHMySQLQueryRequest *deleteQuery = [OHMySQLQueryRequestFactory DELETE:@"tzuchi" condition:deleteQueryStr];
+            OHMySQLQueryRequest *deleteQuery = [OHMySQLQueryRequestFactory DELETE:dbName condition:deleteQueryStr];
             [queryContext executeQueryRequest:deleteQuery error:nil];
         }
 

@@ -52,7 +52,7 @@
     [self.view addSubview:serverLabel];
 
     // 添加下拉菜单
-    self.serverOptions = @[@"波士顿服务器", @"台湾服务器", @"加州服务器"];
+    self.serverOptions = @[@"测试服务器", @"波士顿慈济", @"加州慈济"];
     [self.serverPicker reloadAllComponents];
     self.serverPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(20, 320, self.view.bounds.size.width - 40, 100)];
     self.serverPicker.delegate = self;
@@ -113,7 +113,7 @@
     [self.view addSubview:versionLabel];
 
     UILabel *authorLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.bounds.size.height - 160, self.view.bounds.size.width - 40, 30)];
-    authorLabel.text = @"作者：T & Haixin";
+    authorLabel.text = @"作者：Xieldor & Haixin";
     authorLabel.font = [UIFont boldSystemFontOfSize:12];
     authorLabel.textColor = [UIColor purpleColor];
     authorLabel.textAlignment = NSTextAlignmentCenter;
@@ -202,8 +202,19 @@
             scanVC.databasePassword = self.passwordField.text;
             scanVC.databaseip = @"rm-rj9nf713uz07qt43qyo.mysql.rds.aliyuncs.com";
             scanVC.databaseport = @"3306";
-            scanVC.databaseusername = @"haixin_guan";
-            scanVC.databasedbName = @"tzuchi";
+            
+            // 根据选中的服务器设置 databasedbName
+            NSInteger selectedRow = [self.serverPicker selectedRowInComponent:0];
+            NSString *selectedServer = self.serverOptions[selectedRow];
+            if ([selectedServer isEqualToString:@"波士顿慈济"]) {
+                scanVC.databasedbName = @"tzuchi";
+                scanVC.databaseusername = @"haixin_guan";
+            } else if ([selectedServer isEqualToString:@"测试服务器"]) {
+                scanVC.databasedbName = @"test_db";
+                scanVC.databaseusername = @"tester";
+            } else {
+                scanVC.databasedbName = @"defaultDBName"; // 用于其他服务器的默认数据库名
+            }
             scanVC.modalPresentationStyle = UIModalPresentationFullScreen;
             [self presentViewController:scanVC animated:YES completion:nil];
         } else {
@@ -231,48 +242,53 @@
 #pragma mark - Actions
 
 - (void)testDatabaseConnection {
-    // 检查是否选中了 "波士顿服务器"
+    // 检查用户选择的服务器并设置相应的数据库名
     NSInteger selectedRow = [self.serverPicker selectedRowInComponent:0];
     NSString *selectedServer = self.serverOptions[selectedRow];
-    if ([selectedServer isEqualToString:@"波士顿服务器"]) {
-        // 获取密码输入框中的密码
-        NSString *password = self.passwordField.text;
-        NSString *ip = @"rm-rj9nf713uz07qt43qyo.mysql.rds.aliyuncs.com";
-        NSString *port = @"3306";
-        NSString *username = @"haixin_guan";
-        NSString *dbName = @"tzuchi";
-        NSString *socket = nil;
-        
-        // 配置数据库连接
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            OHMySQLUser *user = [[OHMySQLUser alloc] initWithUserName:username
-                                                             password:password
-                                                           serverName:ip
-                                                               dbName:dbName
-                                                                 port:[port integerValue]
-                                                               socket:socket];
-            
-            OHMySQLStoreCoordinator *coordinator = [[OHMySQLStoreCoordinator alloc] initWithUser:user];
-            [coordinator connect];
-            
-            BOOL isConnected = [coordinator isConnected];
-            
-            /// 回到主线程更新UI
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (isConnected) {
-                    // 显示数据库连接成功的消息
-                    [self showDatabaseConnectionSuccess];
-                } else {
-                    // 如果未选中 "波士顿服务器" 或连接失败
-                    [self showDatabaseConnectionFailure];
-                }
-                [coordinator disconnect];
-            });
-        });
+    NSString *dbName;
+    NSString *username;
+    if ([selectedServer isEqualToString:@"波士顿慈济"]) {
+        dbName = @"tzuchi";
+        username = @"haixin_guan";
+    } else if ([selectedServer isEqualToString:@"测试服务器"]) {
+        dbName = @"test_db";
+        username = @"tester";
     } else {
-        // 如果未选中 "波士顿服务器" 或连接失败
-        [self showDatabaseConnectionFailure];
+        dbName = @"defaultDBName"; // 其他服务器的默认数据库名
     }
+
+    // 获取密码输入框中的密码
+    NSString *password = self.passwordField.text;
+    NSString *ip = @"rm-rj9nf713uz07qt43qyo.mysql.rds.aliyuncs.com";
+    NSString *port = @"3306";
+    NSString *socket = nil;
+
+    // 异步线程配置数据库连接
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        OHMySQLUser *user = [[OHMySQLUser alloc] initWithUserName:username
+                                                         password:password
+                                                       serverName:ip
+                                                           dbName:dbName
+                                                             port:[port integerValue]
+                                                           socket:socket];
+
+        OHMySQLStoreCoordinator *coordinator = [[OHMySQLStoreCoordinator alloc] initWithUser:user];
+        [coordinator connect];
+
+        BOOL isConnected = [coordinator isConnected];
+
+        // 回到主线程更新UI
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (isConnected) {
+                // 显示数据库连接成功的消息
+                [self showDatabaseConnectionSuccess];
+            } else {
+                // 显示数据库连接失败的消息
+                [self showDatabaseConnectionFailure];
+            }
+            [coordinator disconnect];
+        });
+    });
 }
 
 - (void)showDatabaseConnectionSuccess {

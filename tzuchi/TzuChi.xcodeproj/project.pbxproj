@@ -73,7 +73,7 @@
 		B11757FB2B5759DD00361187 /* MySQL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MySQL.xcframework; path = Pods/OHMySQL/OHMySQL/lib/MySQL.xcframework; sourceTree = "<group>"; };
 		B170360F2B5794E6002A7F2A /* RegistrationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegistrationViewController.h; sourceTree = "<group>"; };
 		B17036102B579500002A7F2A /* RegistrationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegistrationViewController.m; sourceTree = "<group>"; };
-		B1CB777A2B56184A00AB848F /* tzuchi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tzuchi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1CB777A2B56184A00AB848F /* TzuChi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TzuChi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CB777D2B56184A00AB848F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B1CB777E2B56184A00AB848F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B1CB77802B56184A00AB848F /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
@@ -85,9 +85,9 @@
 		B1CB778C2B56184C00AB848F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B1CB778E2B56184C00AB848F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1CB778F2B56184C00AB848F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B1CB77952B56184C00AB848F /* tzuchiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tzuchiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1CB77952B56184C00AB848F /* TzuChiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TzuChiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CB77992B56184C00AB848F /* tzuchiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tzuchiTests.m; sourceTree = "<group>"; };
-		B1CB779F2B56184C00AB848F /* tzuchiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tzuchiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1CB779F2B56184C00AB848F /* TzuChiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TzuChiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CB77A32B56184C00AB848F /* tzuchiUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tzuchiUITests.m; sourceTree = "<group>"; };
 		B1CB77A52B56184C00AB848F /* tzuchiUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tzuchiUITestsLaunchTests.m; sourceTree = "<group>"; };
 		B1CB77B22B5619A500AB848F /* QRScannerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QRScannerViewController.m; sourceTree = "<group>"; };
@@ -151,9 +151,9 @@
 		B1CB777B2B56184A00AB848F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B1CB777A2B56184A00AB848F /* tzuchi.app */,
-				B1CB77952B56184C00AB848F /* tzuchiTests.xctest */,
-				B1CB779F2B56184C00AB848F /* tzuchiUITests.xctest */,
+				B1CB777A2B56184A00AB848F /* TzuChi.app */,
+				B1CB77952B56184C00AB848F /* TzuChiTests.xctest */,
+				B1CB779F2B56184C00AB848F /* TzuChiUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -216,9 +216,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B1CB77792B56184A00AB848F /* tzuchi */ = {
+		B1CB77792B56184A00AB848F /* TzuChi */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B1CB77A92B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchi" */;
+			buildConfigurationList = B1CB77A92B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChi" */;
 			buildPhases = (
 				BADD02BE9B27C876BF7E4C0F /* [CP] Check Pods Manifest.lock */,
 				B1CB77762B56184A00AB848F /* Sources */,
@@ -231,14 +231,14 @@
 			);
 			dependencies = (
 			);
-			name = tzuchi;
+			name = TzuChi;
 			productName = tzuchi;
-			productReference = B1CB777A2B56184A00AB848F /* tzuchi.app */;
+			productReference = B1CB777A2B56184A00AB848F /* TzuChi.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B1CB77942B56184C00AB848F /* tzuchiTests */ = {
+		B1CB77942B56184C00AB848F /* TzuChiTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B1CB77AC2B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchiTests" */;
+			buildConfigurationList = B1CB77AC2B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChiTests" */;
 			buildPhases = (
 				22A53B21549B7E35EB1BC85F /* [CP] Check Pods Manifest.lock */,
 				B1CB77912B56184C00AB848F /* Sources */,
@@ -250,14 +250,14 @@
 			dependencies = (
 				B1CB77972B56184C00AB848F /* PBXTargetDependency */,
 			);
-			name = tzuchiTests;
+			name = TzuChiTests;
 			productName = tzuchiTests;
-			productReference = B1CB77952B56184C00AB848F /* tzuchiTests.xctest */;
+			productReference = B1CB77952B56184C00AB848F /* TzuChiTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B1CB779E2B56184C00AB848F /* tzuchiUITests */ = {
+		B1CB779E2B56184C00AB848F /* TzuChiUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B1CB77AF2B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchiUITests" */;
+			buildConfigurationList = B1CB77AF2B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChiUITests" */;
 			buildPhases = (
 				75F387D8863E1D7E76B01164 /* [CP] Check Pods Manifest.lock */,
 				B1CB779B2B56184C00AB848F /* Sources */,
@@ -270,9 +270,9 @@
 			dependencies = (
 				B1CB77A12B56184C00AB848F /* PBXTargetDependency */,
 			);
-			name = tzuchiUITests;
+			name = TzuChiUITests;
 			productName = tzuchiUITests;
-			productReference = B1CB779F2B56184C00AB848F /* tzuchiUITests.xctest */;
+			productReference = B1CB779F2B56184C00AB848F /* TzuChiUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -297,7 +297,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B1CB77752B56184A00AB848F /* Build configuration list for PBXProject "tzuchi" */;
+			buildConfigurationList = B1CB77752B56184A00AB848F /* Build configuration list for PBXProject "TzuChi" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -310,9 +310,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B1CB77792B56184A00AB848F /* tzuchi */,
-				B1CB77942B56184C00AB848F /* tzuchiTests */,
-				B1CB779E2B56184C00AB848F /* tzuchiUITests */,
+				B1CB77792B56184A00AB848F /* TzuChi */,
+				B1CB77942B56184C00AB848F /* TzuChiTests */,
+				B1CB779E2B56184C00AB848F /* TzuChiUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -485,12 +485,12 @@
 /* Begin PBXTargetDependency section */
 		B1CB77972B56184C00AB848F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B1CB77792B56184A00AB848F /* tzuchi */;
+			target = B1CB77792B56184A00AB848F /* TzuChi */;
 			targetProxy = B1CB77962B56184C00AB848F /* PBXContainerItemProxy */;
 		};
 		B1CB77A12B56184C00AB848F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B1CB77792B56184A00AB848F /* tzuchi */;
+			target = B1CB77792B56184A00AB848F /* TzuChi */;
 			targetProxy = B1CB77A02B56184C00AB848F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -703,7 +703,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tzuchi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/tzuchi";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TzuChi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TzuChi";
 			};
 			name = Debug;
 		};
@@ -721,7 +721,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tzuchi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/tzuchi";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TzuChi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TzuChi";
 			};
 			name = Release;
 		};
@@ -760,7 +760,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B1CB77752B56184A00AB848F /* Build configuration list for PBXProject "tzuchi" */ = {
+		B1CB77752B56184A00AB848F /* Build configuration list for PBXProject "TzuChi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1CB77A72B56184C00AB848F /* Debug */,
@@ -769,7 +769,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B1CB77A92B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchi" */ = {
+		B1CB77A92B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1CB77AA2B56184C00AB848F /* Debug */,
@@ -778,7 +778,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B1CB77AC2B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchiTests" */ = {
+		B1CB77AC2B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChiTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1CB77AD2B56184C00AB848F /* Debug */,
@@ -787,7 +787,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B1CB77AF2B56184C00AB848F /* Build configuration list for PBXNativeTarget "tzuchiUITests" */ = {
+		B1CB77AF2B56184C00AB848F /* Build configuration list for PBXNativeTarget "TzuChiUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B1CB77B02B56184C00AB848F /* Debug */,

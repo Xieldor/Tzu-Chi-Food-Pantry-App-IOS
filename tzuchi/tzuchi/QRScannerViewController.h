@@ -24,6 +24,7 @@
 @property (strong, nonatomic) NSString *databaseusername;
 @property (strong, nonatomic) NSString *databasedbName;
 @property (strong, nonatomic) UIButton *cancelScanButton;
+@property (strong, nonatomic) UILabel *reminderLabel;
 
 @end
 

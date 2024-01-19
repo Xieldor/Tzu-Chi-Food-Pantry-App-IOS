@@ -17,6 +17,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor]; // 设置初始背景色
+    
+    // 创建提醒文字标签
+    self.reminderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - 160, self.view.bounds.size.width, 50)];
+    self.reminderLabel.text = @"请将摄像头对准美国驾照背面二维码";
+    self.reminderLabel.textColor = [UIColor whiteColor]; // 设置文字颜色为白色
+    self.reminderLabel.backgroundColor = [UIColor clearColor]; // 设置背景色为透明
+    self.reminderLabel.textAlignment = NSTextAlignmentCenter; // 设置文字居中对齐
+    self.reminderLabel.font = [UIFont systemFontOfSize:16]; // 设置字体大小
+    self.reminderLabel.hidden = YES; // 初始隐藏
+    [self.view addSubview:self.reminderLabel];
+    
     [self setupCaptureSession];
     [self setupUI];
 }
@@ -117,6 +128,9 @@
     self.cancelScanButton.layer.cornerRadius = 10;
     self.cancelScanButton.hidden = YES; // 初始隐藏
     [self.view addSubview:self.cancelScanButton];
+    
+    
+    [self.view bringSubviewToFront:self.reminderLabel]; // 将标签添加到视图中
 }
 
 - (void)startScanning {
@@ -131,6 +145,7 @@
             // 重新开始扫描线动画
             [self startScanLineAnimation];
             self.cancelScanButton.hidden = NO;
+            self.reminderLabel.hidden = NO;
         });
     });
 
@@ -268,6 +283,7 @@
             // 邮编不在02110到02129范围内，显示提示框
             // 在显示警告框前隐藏按钮
             self.cancelScanButton.hidden = YES;
+            self.reminderLabel.hidden = YES;
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"邮编范围错误"
                                                                            message:@"驾照邮编不在02110到02129范围内。"
                                                                     preferredStyle:UIAlertControllerStyleAlert];
@@ -327,7 +343,7 @@
 - (void)handleExpiredLicense {
     // 在显示警告框前隐藏按钮
     self.cancelScanButton.hidden = YES;
-    
+    self.reminderLabel.hidden = YES;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"驾照过期"
                                                                    message:@"当前驾照已经过期，无法使用."
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -372,7 +388,7 @@
         // 创建查询
         OHMySQLQueryContext *queryContext = [OHMySQLQueryContext new];
         queryContext.storeCoordinator = coordinator;
-        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory SELECT:@"tzuchi" condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
+        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory SELECT:dbName condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
         
         // 执行查询
         NSError *error = nil;
@@ -404,7 +420,7 @@
                                   licenseNumber:(NSString *)licenseNumber {
     // 在显示警告框前隐藏按钮
     self.cancelScanButton.hidden = YES;
-    
+    self.reminderLabel.hidden = YES;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"驾照未注册"
                                                                    message:@"数据库无此驾照，是否进行注册？"
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -465,7 +481,7 @@
                                  responseData:(NSArray *)responseData {
     // 在显示警告框前隐藏按钮
     self.cancelScanButton.hidden = YES;
-    
+    self.reminderLabel.hidden = YES;
     // 弹出对话框
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"驾照已注册"
                                                                    message:@"数据库中已有此驾照，是否更新数据？"

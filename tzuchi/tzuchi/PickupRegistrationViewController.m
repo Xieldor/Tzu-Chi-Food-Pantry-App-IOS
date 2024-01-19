@@ -13,6 +13,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor]; // 设置初始背景色
+    
+    // 创建提醒文字标签
+    self.reminderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - 160, self.view.bounds.size.width, 50)];
+    self.reminderLabel.text = @"请将摄像头对准美国驾照背面二维码";
+    self.reminderLabel.textColor = [UIColor whiteColor]; // 设置文字颜色为白色
+    self.reminderLabel.backgroundColor = [UIColor clearColor]; // 设置背景色为透明
+    self.reminderLabel.textAlignment = NSTextAlignmentCenter; // 设置文字居中对齐
+    self.reminderLabel.font = [UIFont systemFontOfSize:16]; // 设置字体大小
+    self.reminderLabel.hidden = YES; // 初始隐藏
+    [self.view addSubview:self.reminderLabel];
+    
     [self setupCaptureSession];
     [self setupUI];
 }
@@ -113,6 +124,9 @@
     self.cancelScanButton.layer.cornerRadius = 10;
     self.cancelScanButton.hidden = YES; // 初始隐藏
     [self.view addSubview:self.cancelScanButton];
+    
+
+    [self.view bringSubviewToFront:self.reminderLabel];
 }
 
 - (void)startScanning {
@@ -127,6 +141,7 @@
             // 重新开始扫描线动画
             [self startScanLineAnimation];
             self.cancelScanButton.hidden = NO;
+            self.reminderLabel.hidden = NO;
         });
     });
 
@@ -242,6 +257,7 @@
 - (void)handleExpiredLicense {
     // 在显示警告框前隐藏按钮
     self.cancelScanButton.hidden = YES;
+    self.reminderLabel.hidden = YES;
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"驾照过期"
                                                                    message:@"当前驾照已经过期，无法使用."
@@ -287,7 +303,7 @@
         // 创建查询
         OHMySQLQueryContext *queryContext = [OHMySQLQueryContext new];
         queryContext.storeCoordinator = coordinator;
-        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory SELECT:@"tzuchi" condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
+        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory SELECT:dbName condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
         
         // 执行查询
         NSError *error = nil;
@@ -310,11 +326,13 @@
                     // 如果日期不等于今天或“00000000”，更新数据库并显示成功取菜
                     // 在显示警告框前隐藏按钮
                     self.cancelScanButton.hidden = YES;
+                    self.reminderLabel.hidden = YES;
                     [self updateLastTimeForLicense:licenseNumber];
                 } else {
                     // 如果日期不是今天，显示已取菜的警告
                     // 在显示警告框前隐藏按钮
                     self.cancelScanButton.hidden = YES;
+                    self.reminderLabel.hidden = YES;
                     [self showAlertWithTitleRed:@"!!!!! 警告 !!!!!" message:@"!!! 本驾照今日已经取菜 !!!"];
                 }
                 }
@@ -323,17 +341,16 @@
 }
 
 - (void)showUnregisteredLicenseAlert {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"驾照未注册"
-                                                                   message:@"本驾照尚未注册"
+    // 在显示警告框前隐藏按钮
+    self.cancelScanButton.hidden = YES;
+    self.reminderLabel.hidden = YES;
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"!!!!! 驾照未注册 !!!!!"
+                                                                   message:@"!!! 本驾照尚未注册 !!!"
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *registerAction = [UIAlertAction actionWithTitle:@"返回注册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *registerAction = [UIAlertAction actionWithTitle:@"无法取菜，返回注册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self backToHome];
     }];
-    UIAlertAction *scanNextAction = [UIAlertAction actionWithTitle:@"扫描下一张" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self startScanning];
-    }];
     [alert addAction:registerAction];
-    [alert addAction:scanNextAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -364,7 +381,7 @@
         queryContext.storeCoordinator = coordinator;
         NSError *error = nil;
         
-        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory UPDATE:@"tzuchi" set:dataToInsert condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
+        OHMySQLQueryRequest *query = [OHMySQLQueryRequestFactory UPDATE:dbName set:dataToInsert condition:[NSString stringWithFormat:@"license_number='%@'", licenseNumber]];
         // 执行查询
         [queryContext executeQueryRequest:query error:&error];
         

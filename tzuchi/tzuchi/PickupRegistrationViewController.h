@@ -25,5 +25,6 @@
 @property (strong, nonatomic) UIButton *backButton;
 @property (strong, nonatomic) UIButton *homeButton;
 @property (strong, nonatomic) UIButton *cancelScanButton;
+@property (strong, nonatomic) UILabel *reminderLabel;
 
 @end
