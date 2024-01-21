@@ -9,6 +9,8 @@
 
 @interface ViewController : UIViewController
 
+@property (nonatomic, strong) NSDate *lastLoginAttemptDate;
+@property (nonatomic, assign) NSInteger loginAttemptCount;
 
 @end
 

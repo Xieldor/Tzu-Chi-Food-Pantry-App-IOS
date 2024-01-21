@@ -24,6 +24,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // 初始化登陆尝试次数和时间
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.lastLoginAttemptDate = [defaults objectForKey:@"lastLoginAttemptDate"];
+    self.loginAttemptCount = [defaults integerForKey:@"loginAttemptCount"];
+
+    if (!self.lastLoginAttemptDate) {
+        self.lastLoginAttemptDate = [NSDate date];
+    }
     
     // 设置整体背景颜色
     self.view.backgroundColor = [UIColor colorWithRed:0.85 green:0.95 blue:0.90 alpha:1.0];
@@ -192,6 +200,12 @@
 }
 
 - (void)startUsingApp {
+    
+    if ([self isLoginAttemptLimitReached]) {
+        [self showLoginAttemptLimitReached];
+        return;
+    }
+    
     [self testDatabaseConnection];
 
     // 延迟执行，以便给数据库连接测试留出足够的时间
@@ -219,7 +233,7 @@
             [self presentViewController:scanVC animated:YES completion:nil];
         } else {
             // 连接失败，显示错误提示
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"错误" message:@"远程服务器无响应，请检查您的网络设置或者服务器登录密码。" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登陆错误" message:@"远程服务器无响应，请检查您的网络设置或者服务器登录密码。" preferredStyle:UIAlertControllerStyleAlert];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
             [alert addAction:okAction];
             [self presentViewController:alert animated:YES completion:nil];
@@ -242,6 +256,12 @@
 #pragma mark - Actions
 
 - (void)testDatabaseConnection {
+    // 检查每日登陆失败次数
+    if ([self isLoginAttemptLimitReached]) {
+        [self showLoginAttemptLimitReached];
+        return;
+    }
+    
     // 检查用户选择的服务器并设置相应的数据库名
     NSInteger selectedRow = [self.serverPicker selectedRowInComponent:0];
     NSString *selectedServer = self.serverOptions[selectedRow];
@@ -280,15 +300,72 @@
         // 回到主线程更新UI
         dispatch_async(dispatch_get_main_queue(), ^{
             if (isConnected) {
+                [self refreshLoginAttempt];
                 // 显示数据库连接成功的消息
                 [self showDatabaseConnectionSuccess];
             } else {
+                // 增加尝试次数并记录最后尝试时间
+                [self recordLoginAttempt];
                 // 显示数据库连接失败的消息
-                [self showDatabaseConnectionFailure];
+                [self handleConnectionFailure];
             }
             [coordinator disconnect];
         });
     });
+}
+
+- (void)handleConnectionFailure {
+    // 再次检查登录尝试次数
+    if ([self isLoginAttemptLimitReached]) {
+        [self showLoginAttemptLimitReached];
+    } else {
+        [self showDatabaseConnectionFailure];
+    }
+}
+
+- (BOOL)isLoginAttemptLimitReached {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    return [calendar isDateInToday:self.lastLoginAttemptDate] && self.loginAttemptCount >= 5;
+}
+
+- (void)recordLoginAttempt {
+    NSDate *now = [NSDate date];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    if (![calendar isDateInToday:self.lastLoginAttemptDate]) {
+        self.loginAttemptCount = 0;
+    }
+
+    self.loginAttemptCount++;
+    self.lastLoginAttemptDate = now;
+    
+    // 使用 NSUserDefaults 存储尝试次数和日期
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:now forKey:@"lastLoginAttemptDate"];
+    [defaults setInteger:self.loginAttemptCount forKey:@"loginAttemptCount"];
+    [defaults synchronize];
+}
+
+- (void)refreshLoginAttempt {
+    NSDate *now = [NSDate date];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+
+    self.loginAttemptCount = 0;
+    self.lastLoginAttemptDate = now;
+    
+    // 使用 NSUserDefaults 存储尝试次数和日期
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:now forKey:@"lastLoginAttemptDate"];
+    [defaults setInteger:self.loginAttemptCount forKey:@"loginAttemptCount"];
+    [defaults synchronize];
+}
+
+- (void)showLoginAttemptLimitReached {
+    // 显示超过尝试次数的错误信息
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"登录尝试过多" message:@"您今天已经尝试错误登录五次，请明天再试。" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)showDatabaseConnectionSuccess {
