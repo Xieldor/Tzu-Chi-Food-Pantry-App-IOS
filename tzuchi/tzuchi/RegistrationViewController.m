@@ -150,16 +150,25 @@ id valueOrNSNull(id value) {
         OHMySQLQueryRequest *queryRequest = [OHMySQLQueryRequestFactory SELECT:dbName condition:queryStr];
         NSArray *response = [queryContext executeQueryRequestAndFetchResult:queryRequest error:&error];
 
-        // 如果查询到重复地址
-        if (response && response.count > 0) {
-            // 回到主线程显示对话框
+        if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self showDuplicateAddressAlert:response];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"获取信息失败" message:[NSString stringWithFormat:@"远程服务器无响应，请检查您的网络设置。"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+                [alert addAction:okAction];
+                [self presentViewController:alert animated:YES completion:nil];
             });
         } else {
-            // 如果没有重复地址或查询失败，继续执行添加或更新操作
-            NSLog(@"Error executing query: %@", error);
-            [self addOrUpdateRecord];
+            // 如果查询到重复地址
+            if (response && response.count > 0) {
+                // 回到主线程显示对话框
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showDuplicateAddressAlert:response];
+                });
+            } else {
+                // 如果没有重复地址或查询失败，继续执行添加或更新操作
+                NSLog(@"Error executing query: %@", error);
+                [self addOrUpdateRecord];
+            }
         }
     });
 }

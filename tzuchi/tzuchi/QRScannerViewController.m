@@ -394,15 +394,25 @@
         NSError *error = nil;
         NSArray *response = [queryContext executeQueryRequestAndFetchResult:query error:&error];
         
-        BOOL isRegistered = (response != nil && response.count > 0);
-        
-        // 断开数据库连接
-        [coordinator disconnect];
-        
-        // 在主线程上执行回调
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completion(isRegistered, response);
-        });
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"获取信息失败" message:[NSString stringWithFormat:@"远程服务器无响应，请检查您的网络设置。"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+                [alert addAction:okAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        } else {
+            
+            BOOL isRegistered = (response != nil && response.count > 0);
+            
+            // 断开数据库连接
+            [coordinator disconnect];
+            
+            // 在主线程上执行回调
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(isRegistered, response);
+            });
+        }
     });
 }
 

@@ -314,29 +314,38 @@
         // 断开数据库连接
         [coordinator disconnect];
         
-        // 在主线程上执行回调
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (!isRegistered) {
-                [self showUnregisteredLicenseAlert];
-            } else {
-                // 驾照号码已在数据库中注册
-                NSDictionary *licenseData = [response firstObject];
-                NSString *lastTime = licenseData[@"last_time"]; // 假设字段名为 last_time
-                if (![self isDate:lastTime equalToDate:[self currentDate]] || [lastTime isEqualToString:@"00000000"]) {
-                    // 如果日期不等于今天或“00000000”，更新数据库并显示成功取菜
-                    // 在显示警告框前隐藏按钮
-                    self.cancelScanButton.hidden = YES;
-                    self.reminderLabel.hidden = YES;
-                    [self updateLastTimeForLicense:licenseNumber];
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"获取信息失败" message:[NSString stringWithFormat:@"远程服务器无响应，请检查您的网络设置。"] preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:nil];
+                [alert addAction:okAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        } else {
+            // 在主线程上执行回调
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!isRegistered) {
+                    [self showUnregisteredLicenseAlert];
                 } else {
-                    // 如果日期不是今天，显示已取菜的警告
-                    // 在显示警告框前隐藏按钮
-                    self.cancelScanButton.hidden = YES;
-                    self.reminderLabel.hidden = YES;
-                    [self showAlertWithTitleRed:@"!!!!! 警告 !!!!!" message:@"!!! 本驾照今日已经取菜 !!!"];
-                }
+                    // 驾照号码已在数据库中注册
+                    NSDictionary *licenseData = [response firstObject];
+                    NSString *lastTime = licenseData[@"last_time"]; // 假设字段名为 last_time
+                    if (![self isDate:lastTime equalToDate:[self currentDate]] || [lastTime isEqualToString:@"00000000"]) {
+                        // 如果日期不等于今天或“00000000”，更新数据库并显示成功取菜
+                        // 在显示警告框前隐藏按钮
+                        self.cancelScanButton.hidden = YES;
+                        self.reminderLabel.hidden = YES;
+                        [self updateLastTimeForLicense:licenseNumber];
+                    } else {
+                        // 如果日期不是今天，显示已取菜的警告
+                        // 在显示警告框前隐藏按钮
+                        self.cancelScanButton.hidden = YES;
+                        self.reminderLabel.hidden = YES;
+                        [self showAlertWithTitleRed:@"!!!!! 警告 !!!!!" message:@"!!! 本驾照今日已经取菜 !!!"];
+                    }
                 }
             });
+        }
     });
 }
 

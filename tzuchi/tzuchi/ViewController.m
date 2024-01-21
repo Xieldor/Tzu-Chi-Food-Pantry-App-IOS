@@ -399,7 +399,6 @@
 
 - (void)refreshLoginAttempt {
     NSDate *now = [NSDate date];
-    NSCalendar *calendar = [NSCalendar currentCalendar];
 
     self.loginAttemptCount = 0;
     self.lastLoginAttemptDate = now;
