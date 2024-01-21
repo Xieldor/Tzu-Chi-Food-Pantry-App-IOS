@@ -62,7 +62,7 @@
     // 添加下拉菜单
     self.serverOptions = @[@"测试服务器", @"波士顿慈济", @"加州慈济"];
     [self.serverPicker reloadAllComponents];
-    self.serverPicker = [[UIPickerView alloc] initWithFrame:CGRectMake(20, 320, self.view.bounds.size.width - 40, 100)];
+    self.serverPicker = [[UIPickerView alloc] initWithFrame:CGRectMake((self.view.bounds.size.width / 2 + 10) / 2, 320, (self.view.bounds.size.width - 20) / 2, 100)];
     self.serverPicker.delegate = self;
     self.serverPicker.dataSource = self;
     [self.view addSubview:self.serverPicker];
@@ -74,10 +74,37 @@
     passwordLabel.textColor = [UIColor brownColor];
     [self.view addSubview:passwordLabel];
 
-    self.passwordField = [[UITextField alloc] initWithFrame:CGRectMake(210, 420, self.view.bounds.size.width - 230, 30)];
+    self.passwordField = [[UITextField alloc] initWithFrame:CGRectMake(190, 420, self.view.bounds.size.width - 230, 30)];
     self.passwordField.borderStyle = UITextBorderStyleRoundedRect;
-    self.passwordField.backgroundColor = [UIColor grayColor];
+    self.passwordField.backgroundColor = [UIColor colorWithRed:0.75 green:0.85 blue:0.80 alpha:1.0];
     self.passwordField.secureTextEntry = YES; // 设置密码框隐藏输入内容
+    
+
+    // 创建切换密码可见性的按钮
+    UIButton *toggleVisibilityButton = [UIButton buttonWithType:UIButtonTypeCustom];
+
+    // 设置按钮的frame与密码框高度一致
+    CGFloat VisibilityButtonHeight = self.passwordField.frame.size.height;
+    toggleVisibilityButton.frame = CGRectMake(0, 0, VisibilityButtonHeight, VisibilityButtonHeight);
+
+    // 创建图标的UIImageView，并设置其大小和位置
+    UIImageView *eyeImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"eye_closed"]];
+    eyeImageView.frame = CGRectMake(0, 0, VisibilityButtonHeight * 0.6, VisibilityButtonHeight * 0.6); // 根据需要调整大小
+    eyeImageView.contentMode = UIViewContentModeScaleAspectFit;
+    eyeImageView.center = CGPointMake(VisibilityButtonHeight / 2, VisibilityButtonHeight / 2);
+
+    // 将图像视图添加到按钮
+    [toggleVisibilityButton addSubview:eyeImageView];
+
+    // 添加按钮的点击事件
+    [toggleVisibilityButton addTarget:self action:@selector(togglePasswordVisibility) forControlEvents:UIControlEventTouchUpInside];
+
+    // 将按钮添加到密码框
+    self.passwordField.rightView = toggleVisibilityButton;
+    self.passwordField.rightViewMode = UITextFieldViewModeAlways;
+
+    [self.view addSubview:self.passwordField];
+
     [self.view addSubview:self.passwordField];
     
     CGFloat buttonWidth = (self.view.bounds.size.width - 40) / 2;
@@ -160,6 +187,30 @@
     button.layer.cornerRadius = 10;
     button.layer.masksToBounds = YES;
 }
+
+- (void)togglePasswordVisibility {
+    // 更改密码的可见性
+    self.passwordField.secureTextEntry = !self.passwordField.secureTextEntry;
+
+    // 获取按钮并更改其图标
+    UIButton *button = (UIButton *)self.passwordField.rightView;
+    NSString *buttonImageName = self.passwordField.secureTextEntry ? @"eye_closed" : @"eye_open";
+    UIImage *newImage = [UIImage imageNamed:buttonImageName];
+
+    // 从按钮中移除所有子视图
+    [button.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
+    // 重新创建图标的UIImageView，并设置其大小和位置
+    CGFloat buttonHeight = button.frame.size.height;
+    UIImageView *eyeImageView = [[UIImageView alloc] initWithImage:newImage];
+    eyeImageView.frame = CGRectMake(0, 0, buttonHeight * 0.6, buttonHeight * 0.6); // 根据需要调整大小
+    eyeImageView.contentMode = UIViewContentModeScaleAspectFit;
+    eyeImageView.center = CGPointMake(buttonHeight / 2, buttonHeight / 2);
+
+    // 将新的图像视图添加到按钮
+    [button addSubview:eyeImageView];
+}
+
 
 #pragma mark - UIPickerViewDataSource
 
