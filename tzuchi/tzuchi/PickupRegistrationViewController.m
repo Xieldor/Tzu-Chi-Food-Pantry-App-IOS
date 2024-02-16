@@ -330,14 +330,22 @@
                     // 驾照号码已在数据库中注册
                     NSDictionary *licenseData = [response firstObject];
                     NSString *lastTime = licenseData[@"last_time"]; // 假设字段名为 last_time
+                    // 如果日期不等于今天或“00000000”
                     if (![self isDate:lastTime equalToDate:[self currentDate]] || [lastTime isEqualToString:@"00000000"]) {
-                        // 如果日期不等于今天或“00000000”，更新数据库并显示成功取菜
-                        // 在显示警告框前隐藏按钮
-                        self.cancelScanButton.hidden = YES;
-                        self.reminderLabel.hidden = YES;
-                        [self updateLastTimeForLicense:licenseNumber];
+                        // 如果两周内已经取菜，弹出警告
+                        if ([self isLastTimeWithin16Days:lastTime]) {
+                            // 如果驾照上次被使用的日期在当前日期之前的 16 天内，显示警告
+                            self.cancelScanButton.hidden = YES;
+                            self.reminderLabel.hidden = YES;
+                            [self showAlertWithTitleRed:@"!!!!! 警告 !!!!!" message:@"!!! 本驾照已在上一次发放活动中取菜 !!!"];
+                        } else {
+                            // 在显示警告框前隐藏按钮
+                            self.cancelScanButton.hidden = YES;
+                            self.reminderLabel.hidden = YES;
+                            [self updateLastTimeForLicense:licenseNumber];
+                        }
                     } else {
-                        // 如果日期不是今天，显示已取菜的警告
+                        // 如果日期是今天，显示已取菜的警告
                         // 在显示警告框前隐藏按钮
                         self.cancelScanButton.hidden = YES;
                         self.reminderLabel.hidden = YES;
@@ -347,6 +355,16 @@
             });
         }
     });
+}
+
+- (BOOL)isLastTimeWithin16Days:(NSString *)lastTime {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMddyyyy"];
+    NSDate *lastTimeDate = [dateFormatter dateFromString:lastTime];
+    NSDate *currentDate = [NSDate date];
+    NSDate *sixteenDaysAgo = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-16 toDate:currentDate options:0];
+    
+    return [lastTimeDate compare:sixteenDaysAgo] == NSOrderedDescending;
 }
 
 - (void)showUnregisteredLicenseAlert {
